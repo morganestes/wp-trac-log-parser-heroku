@@ -123,7 +123,6 @@ function buildChangesets() {
     // Limit to 2 consecutive carriage returns
     changeset.description = changeset.description.replace(/\n\n\n+/g, '\n\n');
     changeset.description = changeset.description.trim();
-    changeset.description = '\t' + changeset.description;
 
     changesets.push(changeset);
   }
@@ -216,8 +215,8 @@ function buildOutput() {
 
   _.each(categories, function (category) {
     changesetOutput += "### " + category[0].component + "\n";
-    _.each(category, function (changeset) {
 
+    _.each(category, function (changeset) {
       changesetOutput += '* ' +
           changeset.description.trim() + ' ' +
           changeset.revision + ' ' +
