@@ -44,7 +44,7 @@ function getRemoteLogHtml() {
     //console.dir(res.headers, {depth: null, colors: true});
 
     res.on('data', function (chunk) {
-      console.log('got %d bytes of data', chunk.length);
+      //console.log('got %d bytes of data', chunk.length);
       //process.stdout.write(chunk);
       remoteHtml += chunk;
       //console.log( 'on data: %s', remoteHtml);
@@ -53,7 +53,7 @@ function getRemoteLogHtml() {
       console.log('HTML retrieved from remote server.');
       logHTML = remoteHtml;
       //console.log('html end: %s', logHTML);
-      buildChangesets.call();
+      buildChangesets.call(logHTML);
     });
 
     // res.resume();
@@ -128,10 +128,12 @@ function buildChangesets() {
     changesets.push(changeset);
   }
 
-  console.log('changesets from buildChangesets');
-  console.dir(changesets, {depth: null, colors: true});
+  //console.log('changesets from buildChangesets');
+  //console.dir(changesets, {depth: null, colors: true});
 
-  gatherComponentsFromChangesets(changesets);
+  //gatherComponentsFromChangesets(changesets);
+  //buildOutput.call(changesets);
+  buildOutput();
 }
 
 /**
@@ -139,27 +141,37 @@ function buildChangesets() {
  *
  * @returns {Array} The changeset list with added components when able.
  */
-function gatherComponentsFromChangesets(changesets) {
+function gatherComponentsFromChangesets() {
   var ticketPath = "https://core.trac.wordpress.org/ticket/";
   var component = '';
-  request.debug = true;
+  if (process.env.debug) {
+    request.debug = true;
+  }
 
-  async.each(changesets, function getRelatedTickets(changeset) {
-        async.eachSeries(changeset['related'], function getTicketComponent(ticket) {
-          request(ticketPath + ticket, {
-            timeout: 4400,
-            gzip: true,
-            jar: true
-          }, function (error, response, body) {
-            if (!error && response.statusCode === 200) {
-              console.info('loading changeset data for: %s', changeset.revision);
-              component = $.load(body)("#h_component").next("td").text().trim();
-              changeset['component'].push(component);
-              console.log('changeset %s updated to component %s', changeset.revision, component);
-              console.dir(changeset, {depth: null, colors: true});
-            }
-          });
-        });
+  async.eachSeries(changesets, function getRelatedTickets(changeset) {
+        async.each(changeset['related'], function getTicketComponent(ticket) {
+              request(ticketPath + ticket, {
+                timeout: 4400,
+                gzip: true,
+                jar: true
+              }, function (error, response, body) {
+                if (!error && response.statusCode === 200) {
+                  console.info('loading changeset data for: %s', changeset.revision);
+                  component = $.load(body)("#h_component").next("td").text().trim();
+                  changeset['component'].push(component.toString());
+                  console.log('changeset %s updated to component "%s"', changeset.revision, component);
+                  console.dir(changeset, {depth: null, colors: true});
+                }
+              });
+            },
+            function (err) {
+              if (err) {
+                console.error(err);
+              } else {
+                console.dir(changeset.related);
+                console.log('related tickets for %s updated', changeset.revision);
+              }
+            });
       },
       function (err) {
         if (err) {
@@ -168,7 +180,7 @@ function gatherComponentsFromChangesets(changesets) {
           console.log('changesets after gatherComponentsFromChangesets');
           console.dir(changesets, {depth: null, colors: true});
           //async.apply(buildOutput);
-          buildOutput.call();
+          buildOutput.call(changesets);
         }
       });
 }
@@ -236,8 +248,9 @@ function buildOutput() {
   // Output!
   report = changesetOutput + "\n\n" + propsOutput;
   console.log('report from buildOutput');
-  console.dir(report, {depth: null, colors: true});
-  //console.log('Log complete.');
+  //console.dir(report, {depth: null, colors: true});
+  process.stdout.write(report);
+  console.log('Log complete.');
 }
 
 /**
@@ -288,14 +301,22 @@ function processLogs(start, stop, limit) {
   //      console.log(report);
   //    });
 
-  getRemoteLogHtml.call();
+  //getRemoteLogHtml.call();
+  getRemoteLogHtml();
 
   //getRemoteLogHtml();
   //buildChangesets();
   //gatherComponentsFromChangesets();
   //buildOutput();
 
-  process.stdout.write(report);
+  console.log(report);
+  return report;
+}
+
+function getReport() {
+  "use strict";
+  return report;
 }
 
 module.exports.getLogs = processLogs;
+module.exports.getReport = getReport;
