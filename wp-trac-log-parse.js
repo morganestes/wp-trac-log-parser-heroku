@@ -104,6 +104,13 @@ function buildChangesets() {
     // Create base description
     changeset.description = description.text();
 
+    // Try to grab the component from the commit
+    //var matches = /([\w\/]+:)/gi.exec(changeset.description.toString());
+    //if(matches[0] !== null){
+    //  console.dir(matches[0]);
+    //}
+    //changeset.component = util.isNullOrUndefined(matches[1]) ? '' : matches[1];
+
     // For now, get rid of Fixes and See notes. Should we annotate in summary?
     changeset.description = changeset.description.replace(/[\n|, ]Fixes(.*)/i, '');
     changeset.description = changeset.description.replace(/\nSee(.*)/i, '');
