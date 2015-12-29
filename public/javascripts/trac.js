@@ -79,7 +79,7 @@ function formStuff(event) {
     provideUXFeedback();
 
     // Flow like a harpoon daily and nightly.
-    //this.submit();
+    this.submit();
   }
 }
 
