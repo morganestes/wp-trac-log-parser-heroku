@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var tracParser = require('../wp-trac-log-parse');
-
+var marked = require('marked');
 
 /* GET log page. */
 router.get('/', function (req, res) {
@@ -25,7 +25,7 @@ router.get('/', function (req, res) {
 
     res.render('trac', {
       title: 'Logs parsed for revisions %1$s to %2$s'.replace('%1$s', oldest.toString()).replace('%2$s', newest.toString()),
-      logData: report
+      log: {html: marked(report), raw: report}
     });
     res.end();
   }, 8000);

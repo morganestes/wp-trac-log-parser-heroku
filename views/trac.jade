@@ -3,4 +3,5 @@ extends layout
 block content
   h1= title
 
-  textarea(rows='42') #{logData}
+  textarea(rows='42') #{log.raw}
+  div !{log.html}
