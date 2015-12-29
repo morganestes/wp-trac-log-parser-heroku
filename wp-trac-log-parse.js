@@ -84,46 +84,46 @@ function buildChangesets() {
       break;
     }
 
-    changeset['revision'] = $(logEntries[i]).find("td.rev").text().trim().replace(/@(.*)/, "[$1]");
-    changeset['author'] = $(logEntries[i]).find("td.author").text().trim();
+    changeset.revision = $(logEntries[i]).find('td.rev').text().trim().replace(/@(.*)/, '[$1]');
+    changeset.author = $(logEntries[i]).find('td.author').text().trim();
 
-    description = $(logEntries[i + 1]).find("td.log");
+    description = $(logEntries[i + 1]).find('td.log');
 
     // Re-add `` for code segments.
-    $(description).find("tt").each(function () {
-      $(this).replaceWith("`" + $(this).text() + "`");
+    $(description).find('tt').each(function () {
+      $(this).replaceWith('`' + $(this).text() + '`');
     });
 
     // Store "Fixes" or "See" tickets.
-    changeset['related'] = [];
-    changeset['component'] = [];
-    $(description).find("a.ticket").each(function () {
-      var ticket = $(this).text().trim().replace(/#(.*)/, "$1");
-      changeset['related'].push(ticket);
+    changeset.related = [];
+    changeset.component = [];
+    $(description).find('a.ticket').each(function () {
+      var ticket = $(this).text().trim().replace(/#(.*)/, '$1');
+      changeset.related.push(ticket);
     });
 
     // Create base description
-    changeset['description'] = description.text();
+    changeset.description = description.text();
 
     // For now, get rid of Fixes and See notes. Should we annotate in summary?
-    changeset['description'] = changeset['description'].replace(/[\n|, ]Fixes(.*)/i, '');
-    changeset['description'] = changeset['description'].replace(/\nSee(.*)/i, '');
+    changeset.description = changeset.description.replace(/[\n|, ]Fixes(.*)/i, '');
+    changeset.description = changeset.description.replace(/\nSee(.*)/i, '');
 
     // Extract Props
-    var propsRegex = /\nProps(.*)./i;
-    changeset['props'] = [];
+    var propsRegex = /(?:Props:?\s+)(.*)\.?/mi;
+    changeset.props = [];
 
-    props = changeset['description'].match(propsRegex);
+    props = changeset.description.match(propsRegex);
     if (props !== null) {
-      changeset['props'] = props[1].trim().split(/\s*,\s*/);
+      changeset.props = cleanProps(props[1]);
     }
 
     // Remove Props
-    changeset['description'] = changeset['description'].replace(propsRegex, '');
+    changeset.description = changeset.description.replace(propsRegex, '');
 
     // Limit to 2 consecutive carriage returns
-    changeset['description'] = changeset['description'].replace(/\n\n\n+/g, '\n\n');
-    changeset['description'] = changeset['description'].trim();
+    changeset.description = changeset.description.replace(/\n\n\n+/g, '\n\n');
+    changeset.description = changeset.description.trim();
 
     changesets.push(changeset);
   }
@@ -251,6 +251,25 @@ function buildOutput() {
   //console.dir(report, {depth: null, colors: true});
   process.stdout.write(report);
   console.log('Log complete.');
+}
+
+/**
+ * Takes a string of names from the Props line in a changeset
+ * and cleans it up for further use.
+ *
+ * @param {String} props The list of names from a changeset.
+ * @return {Array} The (maybe) cleaned up list of names as an array.
+ */
+function cleanProps(props) {
+  var _props = props
+      .replace(/(for.*(,))/ig, '') //for the thing, anothername
+      .replace(/(for.*(\.))/, '') //for the thing.
+      .replace(/\./gmi, '')
+      .trim()
+      .replace(/\s/g, ',')
+      .split(/\s*,\s*/);
+
+  return _.without(_props, '');
 }
 
 /**

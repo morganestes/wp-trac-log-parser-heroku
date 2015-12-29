@@ -12,8 +12,8 @@ router.get('/', function (req, res) {
   });
 
 }).post('/', function (req, res) {
-  var newest = parseInt(req.body.startRevision, 10);
-  var oldest = parseInt(req.body.stopRevision, 10);
+  var newest = req.body['startRevision'];
+  var oldest = parseInt(req.body['stopRevision'], 10);
 
   tracParser.getLogs(newest, oldest);
 
