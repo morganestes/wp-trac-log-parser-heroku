@@ -14,8 +14,9 @@ router.get('/', function (req, res) {
 }).post('/', function (req, res) {
   var newest = req.body['startRevision'];
   var oldest = parseInt(req.body['stopRevision'], 10);
+  var limit = parseInt(req.body['revisionLimit'], 10);
 
-  tracParser.getLogs(newest, oldest);
+  tracParser.getLogs(newest, oldest, limit);
 
   this.setTimeout(function () {
     console.info('posted to /trac: from %d to %d', oldest, newest);

@@ -301,7 +301,7 @@ function processLogs(start, stop, limit) {
 
   getRemoteLogHtml();
 
-  console.log(report);
+  //console.log(report);
   return report;
 }
 
