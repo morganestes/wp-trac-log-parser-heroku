@@ -49,17 +49,20 @@ function formStuff(event) {
     var startRevisionEl = form.querySelector('#startRevision'),
         stopRevisionEl = form.querySelector('#stopRevision'),
         revisionLimitEl = form.querySelector('[name="revisionLimit"]'),
-        start, stop;
+        start = parseInt(startRevisionEl.value, 10),
+        stop = parseInt(stopRevisionEl.value, 10);
 
-    if (start = parseInt(startRevisionEl.value, 10) === null) {
-      start = 36000;
+    if (start === null) {
+      start = 36120;
     }
 
-    if (stop = parseInt(stopRevisionEl.value, 10) === null) {
-      stop = 36120;
+    if (stop === null) {
+      stop = 36000;
     }
 
-    revisionLimitEl.value = start - stop;
+    console.log(revisionLimitEl.value);
+    revisionLimitEl.value = (start - stop);
+    console.log(revisionLimitEl.value);
   }
 
   /**
@@ -76,7 +79,7 @@ function formStuff(event) {
     provideUXFeedback();
 
     // Flow like a harpoon daily and nightly.
-    this.submit();
+    //this.submit();
   }
 }
 
