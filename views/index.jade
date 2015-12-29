@@ -3,3 +3,26 @@ extends layout
 block content
   h1= title
   p Welcome to #{title}
+
+  form(action='/trac',method='post')
+    ul
+      li
+        label(for='stopRevision') Oldest Commit Number:
+          input(
+          type='number'
+          name='stopRevision'
+          id='stopRevision'
+          value=36000
+          )
+      li
+        label(for='startRevision') Newest Commit Number:
+          input(
+          type='number'
+          name='startRevision'
+          id='startRevision'
+          value=36118
+          )
+      li
+        button(type='submit') Get logs
+
+  div #{markup}

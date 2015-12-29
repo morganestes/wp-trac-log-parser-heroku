@@ -13,6 +13,10 @@
     "jade": "~1.11.0",
     "morgan": "~1.6.1",
     "serve-favicon": "~2.3.0",
-    "wp-trac-log-parse": "git+https://github.com/morganestes/wp-trac-log-parse.git"
+    "cheerio": ">=0.18.0",
+    "underscore": ">=1.7.0",
+    "minimist": ">=1.1.0",
+    "request": ">=2.51.0",
+    "async": ">=0.9.0"
   }
 }
