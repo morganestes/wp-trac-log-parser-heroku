@@ -1,35 +1,36 @@
 extends layout
 
 block content
-    script(src='/javascripts/trac.js')
-    h1= title
-    p Interested in learning more about how this works, or how we use it to write the #[a(href='https://make.wordpress.org/core/tag/week-in-core/') Week in Core] blog posts?
-    p Join #[a(href='https://wordpress.slack.com/messages/core-weekly-update/') #core-weekly-update] on Making WordPress on Slack and ping @morganestes.
+    header
+        h1=title
+        img.logo(src='/images/wordpress-logo.svg' alt='WordPress logo')
+        p Interested in learning more about how this works, or how we use it to write the #[a(href='https://make.wordpress.org/core/tag/week-in-core/') Week in Core] blog posts?
+        p Join #[a(href='https://wordpress.slack.com/messages/core-weekly-update/') #core-weekly-update] on Making WordPress on Slack and ping @morganestes.
 
-    form#search-trac(action='/trac',method='post')
+    form#search-trac(action='/',method='post')
         input(
         type='hidden'
         value='400'
         name='revisionLimit'
         )
         ul.form
-          li
-            label(for='stopRevision') Oldest Commit Number:
-            input(
-            type='number'
-            name='stopRevision'
-            id='stopRevision'
-            value=36000
-            )
-          li
-            label(for='startRevision') Newest Commit Number:
-            input(
-            type='number'
-            name='startRevision'
-            id='startRevision'
-            value=36118
-            )
-          li
-            button(type='submit') Get logs
+            li
+                label(for='stopRevision') Oldest Commit Number:
+                input(
+                type='number'
+                name='stopRevision'
+                id='stopRevision'
+                value=36000
+                )
+            li
+                label(for='startRevision') Newest Commit Number:
+                input(
+                type='number'
+                name='startRevision'
+                id='startRevision'
+                value=36118
+                )
+            li
+                input(type='submit',value='Get logs')
 
     div #{markup}
