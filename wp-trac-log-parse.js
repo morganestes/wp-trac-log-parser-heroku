@@ -168,7 +168,7 @@ function gatherComponentsFromChangesets(changesets) {
           console.log('changesets after gatherComponentsFromChangesets');
           console.dir(changesets, {depth: null, colors: true});
           //async.apply(buildOutput);
-          //buildOutput.call();
+          buildOutput.call();
         }
       });
 }
