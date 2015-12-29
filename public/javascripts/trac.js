@@ -1,12 +1,4 @@
 /**
- * Wait until the event fires, then take action.
- *
- * @param {String} event The event name to listen for.
- * @param {eventCallback} cb The callback to fire when event fires.
- */
-document.addEventListener('DOMContentLoaded', formStuff);
-
-/**
  * Handle form submission details.
  *
  * @callback eventCallback Fires on 'DOMContentLoaded'.
@@ -86,6 +78,12 @@ function formStuff(event) {
     // Flow like a harpoon daily and nightly.
     this.submit();
   }
-
 }
 
+/**
+ * Wait until the event fires, then take action.
+ *
+ * @param {String} event The event name to listen for.
+ * @param {eventCallback} cb The callback to fire when event fires.
+ */
+document.addEventListener('DOMContentLoaded', formStuff);
