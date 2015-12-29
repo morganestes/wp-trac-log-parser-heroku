@@ -10,6 +10,7 @@
   "boss": true,
   "eqnull": true,
   "validthis": true,
+  "node": true,
   "globals": {
     "exports": true,
     "module": false,

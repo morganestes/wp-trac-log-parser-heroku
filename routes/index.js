@@ -5,8 +5,8 @@ var tracParser = require('../wp-trac-log-parse');
 var marked = require('marked');
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'WP Trac Log Parser' });
+router.get('/', function (req, res, next) {
+  res.render('index', {title: 'WP Trac Log Parser'});
 });
 
 router.post('/', function (req, res) {
@@ -17,8 +17,6 @@ router.post('/', function (req, res) {
   tracParser.getLogs(newest, oldest, limit);
 
   this.setTimeout(function () {
-    console.info('posted to /trac: from %d to %d', oldest, newest);
-    console.dir(process.children, {depth: null, colors: true});
     var report = tracParser.getReport();
     console.dir(report, {depth: null, colors: true});
 
