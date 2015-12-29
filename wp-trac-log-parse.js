@@ -16,7 +16,6 @@ var stopRevision = 3200;
 var revisionLimit = 400;
 var logHTML = '';
 var changesets = [];
-var changesetData = '';
 var report = '';
 
 /**
@@ -73,7 +72,7 @@ function getRemoteLogHtml() {
  */
 function buildChangesets() {
   //console.log('buildChangesets logHTML: %s', logHTML);
-  var logEntries = $.load(logHTML)("tr.verbose");
+  var logEntries = $.load(logHTML)('tr.verbose');
 
   // Each Changeset has two Rows. We Parse them both at once.
   for (var i = 0, l = logEntries.length; i < l; i += 2) {
@@ -124,12 +123,13 @@ function buildChangesets() {
     // Limit to 2 consecutive carriage returns
     changeset.description = changeset.description.replace(/\n\n\n+/g, '\n\n');
     changeset.description = changeset.description.trim();
+    changeset.description = '\t' + changeset.description;
 
     changesets.push(changeset);
   }
 
   //console.log('changesets from buildChangesets');
-  //console.dir(changesets, {depth: null, colors: true});
+  //console.dir(changesets, {depth: null, colors: false});
 
   //gatherComponentsFromChangesets(changesets);
   //buildOutput.call(changesets);
@@ -191,50 +191,48 @@ function gatherComponentsFromChangesets() {
  * @returns {String} A markdown-like report from Trac.
  */
 function buildOutput() {
-  // Reconstitute Log and Collect Props
-  var propsOutput,
-      changesetOutput = '',
-      props = [],
-      categories = {},
-      category;
+// Reconstitute Log and Collect Props
+  var propsOutput;
+  var changesetOutput = '';
+  var props = [];
+  var categories = {};
+  var category = '';
 
   async.map(changesets,
       function (item) {
-        category = item['component'];
+        category = item.component;
 
         if (!category) {
-          category = "Misc";
+          category = 'Misc';
         }
 
         if (!categories[category]) {
           categories[category] = [];
         }
 
-        categories[item['component']].push(item);
+        categories[item.component].push(item);
       }
   );
 
   _.each(categories, function (category) {
-    changesetOutput += "### " + category[0]['component'] + "\n";
+    changesetOutput += "### " + category[0].component + "\n";
     _.each(category, function (changeset) {
 
-      changesetOutput += "* " +
-          changeset['description'].trim() + " " +
-          changeset['revision'] + " " +
-          "#" + changeset['related'].join(', #') + "\n";
+      changesetOutput += '* ' +
+          changeset.description.trim() + ' ' +
+          changeset.revision + ' ' +
+          '#' + changeset.related.join(', #') + "\n";
 
       // Make sure Committers get credit
-      props.push(changeset['author']);
+      props.push(changeset.author);
 
       // Sometimes Committers write their own code.
       // When this happens, there are no additional props.
-      if (changeset['props'].length != 0) {
-        props = props.concat(changeset['props']);
+      if (changeset.props.length !== 0) {
+        props = props.concat(changeset.props);
       }
 
     });
-
-    changesetOutput += "\n";
   });
 
   // Collect Props and sort them.
@@ -242,15 +240,19 @@ function buildOutput() {
     return a.toLowerCase().localeCompare(b.toLowerCase());
   }), true);
 
-  propsOutput = "Thanks to " + "@" + _.without(props, _.last(props)).join(", @") +
-      ", and @" + _.last(props) + " for their contributions!";
+  //TODO: check for invalidUserNames() in props
+
+  propsOutput = util.format(
+      'Thanks to @%s, and @%s for their contributions!',
+      _.without(props, _.last(props)).join(', @'),
+      _.last(props)
+  );
 
   // Output!
-  report = changesetOutput + "\n\n" + propsOutput;
-  console.log('report from buildOutput');
-  //console.dir(report, {depth: null, colors: true});
+  //report = changesetOutput + "\n\n" + propsOutput;
+  report += "## Code Changes\n\n" + changesetOutput;
+  report += "\n## Props\n\n" + propsOutput;
   process.stdout.write(report);
-  console.log('Log complete.');
 }
 
 /**
@@ -291,42 +293,7 @@ function processLogs(start, stop, limit) {
 
   console.log('start: %s, stop: %s, limit: %s', startRevision, stopRevision, revisionLimit);
 
-  //console.info('===== getRemoteLogHtml =====');
-  //var html = getRemoteLogHtml();
-  //console.dir(html, {depth: null, colors: true});
-  //
-  //console.info('===== buildChangesets =====');
-  //var changesets = buildChangesets(html);
-  //console.dir(changesets, {depth: null, colors: true});
-  //
-  //console.info('===== gatherComponentsFromChangesets =====');
-  //var componentizedChangesets = gatherComponentsFromChangesets(changesets);
-  //console.dir(componentizedChangesets, {depth: null, colors: true});
-  //
-  //console.info('===== buildOutput =====');
-  //var report = buildOutput(componentizedChangesets);
-  //process.stdout.write(report);
-
-  //async.waterfall([
-  //      getRemoteLogHtml,
-  //      buildChangesets,
-  //      gatherComponentsFromChangesets,
-  //      buildOutput
-  //    ],
-  //    function (err) {
-  //      if (err) {
-  //        console.error(err);
-  //      }
-  //      console.log(report);
-  //    });
-
-  //getRemoteLogHtml.call();
   getRemoteLogHtml();
-
-  //getRemoteLogHtml();
-  //buildChangesets();
-  //gatherComponentsFromChangesets();
-  //buildOutput();
 
   console.log(report);
   return report;
