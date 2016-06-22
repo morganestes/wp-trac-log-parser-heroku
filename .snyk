@@ -1,5 +1,9 @@
-version: v1.4.0
-ignore: {}
+version: v1.5.0
+ignore:
+  'npm:minimatch:20160620':
+    - snyk > recursive-readdir > minimatch:
+        reason: No update or patch available
+        expires: '2016-07-22T14:48:30.833Z'
 patch:
   'npm:marked:20150520':
     - marked:
