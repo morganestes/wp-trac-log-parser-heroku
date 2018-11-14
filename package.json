@@ -18,7 +18,7 @@
     "jade": "~1.11.0",
     "marked": "^0.3.5",
     "minimist": ">=1.1.0",
-    "morgan": "~1.6.1",
+    "morgan": "~1.9.1",
     "newrelic": "^1.27.2",
     "request": "^2.72.0",
     "serve-favicon": "~2.3.0",
