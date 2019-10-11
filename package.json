@@ -19,7 +19,7 @@
     "marked": "^0.3.5",
     "minimist": ">=1.1.0",
     "morgan": "~1.6.1",
-    "newrelic": "^1.27.2",
+    "newrelic": "^5.13.1",
     "request": "^2.72.0",
     "serve-favicon": "~2.3.0",
     "snyk": "^1.14.3",
