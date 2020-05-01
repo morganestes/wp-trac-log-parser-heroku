@@ -1,9 +1,12 @@
-version: v1.5.0
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.14.1
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
 ignore:
   'npm:minimatch:20160620':
     - snyk > recursive-readdir > minimatch:
         reason: No update or patch available
         expires: '2016-07-22T14:48:30.833Z'
+# patches apply the minimum changes required to fix a vulnerability
 patch:
   'npm:marked:20150520':
     - marked:
@@ -14,3 +17,6 @@ patch:
   'npm:uglify-js:20151024':
     - jade > transformers > uglify-js:
         patched: '2016-05-19T18:18:32.317Z'
+  SNYK-JS-LODASH-567746:
+    - cheerio > lodash:
+        patched: '2020-05-01T08:40:16.437Z'
